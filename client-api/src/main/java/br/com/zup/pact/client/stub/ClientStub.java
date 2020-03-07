@@ -29,6 +29,7 @@ public class ClientStub {
         for (int i = 1; i <= numberOfStubs; i++) {
             final Client client = Client.builder()
                     .id(i)
+                    .accountId(i)
                     .age(new Random().nextInt((MAX_AGE - MIN_AGE) + 1) + MIN_AGE)
                     .name(NameStub.getRandomFirstName())
                     .finalName(NameStub.getRandomLastName())

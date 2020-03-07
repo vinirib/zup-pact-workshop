@@ -1,6 +1,7 @@
 package br.com.zup.pact.accountapi.service.impl;
 
 import br.com.zup.pact.accountapi.dto.AccountDetailsDTO;
+import br.com.zup.pact.accountapi.dto.BalanceDTO;
 import br.com.zup.pact.accountapi.repository.AccountRepository;
 import br.com.zup.pact.accountapi.service.AccountService;
 import lombok.AccessLevel;
@@ -24,5 +25,10 @@ public class AccountServiceImpl implements AccountService {
     @Override
     public Optional<List<AccountDetailsDTO>> getAll() {
         return accountRepository.getAll();
+    }
+
+    @Override
+    public BalanceDTO getBalanceByAccountId(Integer clientId) {
+        return accountRepository.getBalanceByAccountId(clientId);
     }
 }

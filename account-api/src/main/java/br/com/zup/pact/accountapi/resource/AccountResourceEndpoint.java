@@ -1,6 +1,7 @@
 package br.com.zup.pact.accountapi.resource;
 
 import br.com.zup.pact.accountapi.dto.AccountDetailsDTO;
+import br.com.zup.pact.accountapi.dto.BalanceDTO;
 import br.com.zup.pact.accountapi.service.AccountService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -60,5 +61,19 @@ public class AccountResourceEndpoint {
             return new ResponseEntity<>(accountDetailsDTOSFound, HttpStatus.OK);
         }
         return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+    }
+
+    @GetMapping("/balance/{accountId}")
+    @ApiOperation(notes = "Return balance account of clientId",
+            value = "Get balance account of clientId",
+            nickname = "getBalanceOfClientId",
+            response = BalanceDTO.class)
+    @ApiResponses({
+            @ApiResponse(code = 200, message = "Balance Returned", response = BalanceDTO.class),
+            @ApiResponse(code = 404, message = "Client Not Found"),
+    })
+    public ResponseEntity<BalanceDTO> getBalanceByAccountId(@PathVariable("accountId") Integer accountId) {
+        final BalanceDTO balanceDTO = accountService.getBalanceByAccountId(accountId);
+        return new ResponseEntity<>(balanceDTO, HttpStatus.OK);
     }
 }

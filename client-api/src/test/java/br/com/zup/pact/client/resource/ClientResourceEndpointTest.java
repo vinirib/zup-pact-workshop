@@ -1,5 +1,6 @@
 package br.com.zup.pact.client.resource;
 
+import br.com.zup.pact.client.dto.BalanceDTO;
 import br.com.zup.pact.client.dto.ClientDetailsDTO;
 import br.com.zup.pact.client.entity.Client;
 import br.com.zup.pact.client.service.ClientService;
@@ -11,10 +12,10 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.web.servlet.MockMvc;
 
+import java.math.BigDecimal;
 import java.util.Optional;
 
 import static org.hamcrest.Matchers.hasSize;
-import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
@@ -83,5 +84,28 @@ class ClientResourceEndpointTest {
         mockMvc.perform(get("/v1/clients"))
                 .andDo(print())
                 .andExpect(status().isNotFound());
+    }
+
+    @Test
+    void getBalance() throws Exception {
+        BalanceDTO balanceDTO = buildBalanceDTO();
+        when(clientService.getBalance(anyInt())).thenReturn(Optional.of(balanceDTO));
+        mockMvc.perform(get("/v1/clients/balance/1"))
+                .andDo(print())
+                .andExpect(jsonPath("$.clientId").exists())
+                .andExpect(jsonPath("$.accountId").exists())
+                .andExpect(jsonPath("$.balance").exists())
+                .andExpect(jsonPath("$.clientId").value(balanceDTO.getClientId()))
+                .andExpect(jsonPath("$.accountId").value(balanceDTO.getAccountId()))
+                .andExpect(jsonPath("$.balance").value(balanceDTO.getBalance()))
+                .andExpect(status().isOk());
+    }
+
+    private BalanceDTO buildBalanceDTO() {
+        return BalanceDTO.builder()
+                .accountId(1)
+                .balance(new BigDecimal("300"))
+                .clientId(10)
+                .build();
     }
 }

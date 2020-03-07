@@ -15,6 +15,7 @@ import java.util.Objects;
 public class Client {
 
     private Integer id;
+    private Integer accountId;
     private String name;
     private String finalName;
     private Integer age;
@@ -23,6 +24,7 @@ public class Client {
         if (Objects.nonNull(client)){
             return ClientDetailsDTO.builder()
                     .id(client.getId())
+                    .accountId(client.getAccountId())
                     .age(client.getAge())
                     .name(client.getName())
                     .finalName(client.getFinalName())

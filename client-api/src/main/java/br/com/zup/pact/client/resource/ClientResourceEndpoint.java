@@ -1,5 +1,6 @@
 package br.com.zup.pact.client.resource;
 
+import br.com.zup.pact.client.dto.BalanceDTO;
 import br.com.zup.pact.client.dto.ClientDetailsDTO;
 import br.com.zup.pact.client.service.ClientService;
 import io.swagger.annotations.Api;
@@ -16,6 +17,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 
 @RestController
@@ -58,6 +60,24 @@ public class ClientResourceEndpoint {
         if (ClientDetailsDTO.isPresent()) {
             final List<ClientDetailsDTO> clientDetailsDTOS = ClientDetailsDTO.get();
             return new ResponseEntity<>(clientDetailsDTOS, HttpStatus.OK);
+        }
+        return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+    }
+
+    @GetMapping("/balance/{clientId}")
+    @ApiOperation(notes = "Return balance of an client",
+            value = "Get balance of a client",
+            nickname = "getBalance",
+            response = BalanceDTO.class)
+    @ApiResponses({
+            @ApiResponse(code = 200, message = "Client Returned", response = BalanceDTO.class),
+            @ApiResponse(code = 404, message = "Client Not Found"),
+    })
+    public ResponseEntity<BalanceDTO> getBalance(@PathVariable("clientId") Integer clientId) {
+        final Optional<BalanceDTO> balanceDTO = clientService.getBalance(clientId);
+        if (Objects.nonNull(balanceDTO)) {
+            final BalanceDTO balanceDTOFound = balanceDTO.get();
+            return new ResponseEntity<>(balanceDTOFound, HttpStatus.OK);
         }
         return new ResponseEntity<>(HttpStatus.NOT_FOUND);
     }

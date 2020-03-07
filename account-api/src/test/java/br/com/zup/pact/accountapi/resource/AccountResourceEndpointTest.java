@@ -1,6 +1,7 @@
 package br.com.zup.pact.accountapi.resource;
 
 import br.com.zup.pact.accountapi.dto.AccountDetailsDTO;
+import br.com.zup.pact.accountapi.dto.BalanceDTO;
 import br.com.zup.pact.accountapi.entity.Account;
 import br.com.zup.pact.accountapi.service.AccountService;
 import br.com.zup.pact.accountapi.stub.AccountStub;
@@ -51,7 +52,7 @@ class AccountResourceEndpointTest {
 
     @Test
     void getAccountDetailsByNonExistentClientId() throws Exception {
-        mockMvc.perform(get("/v1/accounts/110"))
+        mockMvc.perform(get("/v1/accounts/1100"))
                 .andDo(print())
                 .andExpect(status().isNotFound());
     }
@@ -78,5 +79,20 @@ class AccountResourceEndpointTest {
         mockMvc.perform(get("/v1/accounts"))
                 .andDo(print())
                 .andExpect(status().isNotFound());
+    }
+
+    @Test
+    void getBalanceOfClientId() throws Exception {
+        final BalanceDTO balanceDTO = BalanceDTO.fromAccountToDTO(accountStub.getAccounts().get(1));
+        when(accountService.getBalanceByAccountId(anyInt())).thenReturn(balanceDTO);
+        mockMvc.perform(get("/v1/accounts/balance/1"))
+                .andDo(print())
+                .andExpect(jsonPath("$.clientId").exists())
+                .andExpect(jsonPath("$.accountId").exists())
+                .andExpect(jsonPath("$.balance").exists())
+                .andExpect(jsonPath("$.clientId").value(balanceDTO.getClientId()))
+                .andExpect(jsonPath("$.accountId").value(balanceDTO.getAccountId()))
+                .andExpect(jsonPath("$.balance").value(balanceDTO.getBalance()))
+                .andExpect(status().isOk());
     }
 }
