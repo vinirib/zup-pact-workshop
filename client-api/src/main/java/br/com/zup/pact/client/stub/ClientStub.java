@@ -1,11 +1,13 @@
 package br.com.zup.pact.client.stub;
 
+import br.com.zup.pact.client.dto.ClientDetailsDTO;
 import br.com.zup.pact.client.entity.Client;
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 @Service
 @Slf4j
@@ -34,5 +36,15 @@ public class ClientStub {
             clients.put(i, client);
         }
         return clients;
+    }
+
+    public List<ClientDetailsDTO> getAllStubsDTOFormat(){
+        List<ClientDetailsDTO> clientDetailsDTOS = new ArrayList<>();
+        final List<Client> clients = this.clients.values().stream()
+                .collect(Collectors.toList());
+        for (Client client : clients) {
+            clientDetailsDTOS.add(Client.fromEntityToDto(client));
+        }
+        return clientDetailsDTOS;
     }
 }

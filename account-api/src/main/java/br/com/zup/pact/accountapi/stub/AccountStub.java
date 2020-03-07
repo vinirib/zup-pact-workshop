@@ -1,5 +1,6 @@
 package br.com.zup.pact.accountapi.stub;
 
+import br.com.zup.pact.accountapi.dto.AccountDetailsDTO;
 import br.com.zup.pact.accountapi.entity.Account;
 import br.com.zup.pact.accountapi.enums.AccountType;
 import lombok.Getter;
@@ -8,6 +9,7 @@ import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
 import java.util.*;
+import java.util.stream.Collectors;
 
 @Service
 @Slf4j
@@ -27,8 +29,8 @@ public class AccountStub {
 
     private Map<Integer, Account> createStubs(int numberOfStubs) {
         Map<Integer, Account> accounts = new HashMap<>(NUMBER_OF_STUBS);
-        Collections.shuffle(ACCOUNT_TYPES);
         for (int i = 1; i <= numberOfStubs; i++) {
+            Collections.shuffle(ACCOUNT_TYPES);
             final Account account = Account.builder()
                     .id(i)
                     .clientId(i)
@@ -38,5 +40,15 @@ public class AccountStub {
             accounts.put(i, account);
         }
         return accounts;
+    }
+
+    public List<AccountDetailsDTO> getAllStubsDTOFormat(){
+        List<AccountDetailsDTO> clientDetailsDTOS = new ArrayList<>();
+        final List<Account> accounts = this.accounts.values().stream()
+                .collect(Collectors.toList());
+        for (Account account : accounts) {
+            clientDetailsDTOS.add(Account.fromEntityToDto(account));
+        }
+        return clientDetailsDTOS;
     }
 }

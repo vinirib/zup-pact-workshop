@@ -10,6 +10,7 @@ import java.util.Objects;
 @Builder
 public class ClientDetailsDTO {
 
+    private Integer id;
     private String name;
     private String finalName;
     private Integer age;
@@ -17,6 +18,7 @@ public class ClientDetailsDTO {
     public static Client fromDtoToEntity(ClientDetailsDTO clientDetailsDTO) {
         if (Objects.nonNull(clientDetailsDTO)){
             return Client.builder()
+                    .id(clientDetailsDTO.getId())
                     .name(clientDetailsDTO.getName())
                     .finalName(clientDetailsDTO.getFinalName())
                     .age(clientDetailsDTO.getAge())

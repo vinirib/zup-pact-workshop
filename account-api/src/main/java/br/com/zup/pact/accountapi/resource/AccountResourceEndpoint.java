@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.List;
 import java.util.Optional;
 
 @RestController
@@ -27,8 +28,8 @@ public class AccountResourceEndpoint {
 
     @GetMapping("/{clientId}")
     @ApiOperation(notes = "Return details of and Account by ClientId",
-            value = "Get Account Details",
-            nickname = "getAccountDetails",
+            value = "Get Account Details by client id",
+            nickname = "getAccountDetailsByClientId",
             response = AccountDetailsDTO.class)
     @ApiResponses({
             @ApiResponse(code = 200, message = "Account Returned", response = AccountDetailsDTO.class),
@@ -37,8 +38,26 @@ public class AccountResourceEndpoint {
     public ResponseEntity<AccountDetailsDTO> getAccountDetailsByClientId(@PathVariable("clientId") Integer clientId) {
         final Optional<AccountDetailsDTO> accountDetailsDTO = accountService.getAccountDetailsByClientId(clientId);
         if (accountDetailsDTO.isPresent()) {
-            final AccountDetailsDTO sampleDTOS = accountDetailsDTO.get();
-            return new ResponseEntity<>(sampleDTOS, HttpStatus.OK);
+            final AccountDetailsDTO accountDetailsDTOFound = accountDetailsDTO.get();
+            return new ResponseEntity<>(accountDetailsDTOFound, HttpStatus.OK);
+        }
+        return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+    }
+
+    @GetMapping
+    @ApiOperation(notes = "Return all Accounts",
+            value = "Get all Accounts Details",
+            nickname = "getAll",
+            response = AccountDetailsDTO.class)
+    @ApiResponses({
+            @ApiResponse(code = 200, message = "Client Returned", response = AccountDetailsDTO.class),
+            @ApiResponse(code = 404, message = "Client Not Found"),
+    })
+    public ResponseEntity<List<AccountDetailsDTO>> getAll() {
+        final Optional<List<AccountDetailsDTO>> accountDetailsDTOS = accountService.getAll();
+        if (accountDetailsDTOS.isPresent()) {
+            final List<AccountDetailsDTO> accountDetailsDTOSFound = accountDetailsDTOS.get();
+            return new ResponseEntity<>(accountDetailsDTOSFound, HttpStatus.OK);
         }
         return new ResponseEntity<>(HttpStatus.NOT_FOUND);
     }

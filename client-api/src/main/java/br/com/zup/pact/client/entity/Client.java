@@ -22,6 +22,7 @@ public class Client {
     public static ClientDetailsDTO fromEntityToDto(Client client) {
         if (Objects.nonNull(client)){
             return ClientDetailsDTO.builder()
+                    .id(client.getId())
                     .age(client.getAge())
                     .name(client.getName())
                     .finalName(client.getFinalName())

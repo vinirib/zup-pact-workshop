@@ -7,6 +7,7 @@ import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -18,5 +19,10 @@ public class ClientServiceImpl implements ClientService {
     @Override
     public Optional<ClientDetailsDTO> getClientDetails(Integer clientId) {
         return clientRepository.findByClientId(clientId);
+    }
+
+    @Override
+    public Optional<List<ClientDetailsDTO>> getAll() {
+        return clientRepository.getAll();
     }
 }
