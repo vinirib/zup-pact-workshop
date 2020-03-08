@@ -15,7 +15,10 @@
     <description>Account-API</description>
 
     <properties>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
         <java.version>11</java.version>
+        <pact.version>3.5.24</pact.version>
     </properties>
 
     <dependencies>
@@ -71,6 +74,23 @@
             <version>5.3.2</version>
             <scope>test</scope>
         </dependency>
+        <dependency>
+            <groupId>au.com.dius</groupId>
+            <artifactId>pact-jvm-consumer-junit5</artifactId>
+            <version>4.0.6</version>
+            <scope>test</scope>
+            <exclusions>
+                <exclusion>
+                    <groupId>junit</groupId>
+                    <artifactId>junit</artifactId>
+                </exclusion>
+            </exclusions>
+        </dependency>
+        <dependency>
+            <groupId>commons-io</groupId>
+            <artifactId>commons-io</artifactId>
+            <version>2.6</version>
+        </dependency>
     </dependencies>
 
     <build>
@@ -79,7 +99,18 @@
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-maven-plugin</artifactId>
             </plugin>
+            <plugin>
+                <groupId>au.com.dius</groupId>
+                <artifactId>pact-jvm-provider-maven</artifactId>
+                <version>4.0.6</version>
+                <configuration>
+                    <pactBrokerUrl>http://localhost</pactBrokerUrl>
+                    <pactDirectory>target/pacts</pactDirectory>
+                    <trimSnapshot>true</trimSnapshot>
+                </configuration>
+            </plugin>
         </plugins>
+
     </build>
 
 </project>
