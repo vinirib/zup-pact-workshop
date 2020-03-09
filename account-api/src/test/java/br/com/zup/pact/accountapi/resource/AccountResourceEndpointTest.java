@@ -84,7 +84,7 @@ class AccountResourceEndpointTest {
     @Test
     void getBalanceOfClientId() throws Exception {
         final BalanceDTO balanceDTO = BalanceDTO.fromAccountToDTO(accountStub.getAccounts().get(1));
-        when(accountService.getBalanceByAccountId(anyInt())).thenReturn(balanceDTO);
+        when(accountService.getBalanceByAccountId(anyInt())).thenReturn(Optional.of(balanceDTO));
         mockMvc.perform(get("/v1/accounts/balance/1"))
                 .andDo(print())
                 .andExpect(jsonPath("$.clientId").exists())
@@ -94,5 +94,13 @@ class AccountResourceEndpointTest {
                 .andExpect(jsonPath("$.accountId").value(balanceDTO.getAccountId()))
                 .andExpect(jsonPath("$.balance").value(balanceDTO.getBalance()))
                 .andExpect(status().isOk());
+    }
+
+    @Test
+    void getBalanceOfClientWithNoAccount() throws Exception {
+        when(accountService.getBalanceByAccountId(anyInt())).thenReturn(Optional.empty());
+        mockMvc.perform(get("/v1/accounts/balance/1000"))
+                .andDo(print())
+                .andExpect(status().isNotFound());
     }
 }

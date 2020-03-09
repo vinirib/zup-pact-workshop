@@ -37,13 +37,13 @@ public class AccountRepository {
         return Optional.ofNullable(clientDetailsDTOS);
     }
 
-    public BalanceDTO getBalanceByAccountId(Integer accountId) {
+    public Optional<BalanceDTO> getBalanceByAccountId(Integer accountId) {
         final Account accountFound = accountStub.getAccounts()
                 .values()
                 .stream()
                 .filter(account -> account.getId().equals(accountId))
                 .findFirst()
                 .orElseThrow(() -> new ClientNotFoundException("Account with id: " + accountId + " not found!"));
-        return BalanceDTO.fromAccountToDTO(accountFound);
+        return Optional.ofNullable(BalanceDTO.fromAccountToDTO(accountFound));
     }
 }

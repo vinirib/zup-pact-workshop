@@ -1,24 +1,20 @@
-package br.com.zup.pact.accountapi.pact;
+package br.com.zup.pact.client.pact;
 
 import au.com.dius.pact.consumer.MockServer;
-import au.com.dius.pact.consumer.junit5.PactConsumerTestExt;
-import au.com.dius.pact.consumer.junit5.PactTestFor;
-import au.com.dius.pact.core.model.annotations.Pact;
 import au.com.dius.pact.consumer.dsl.PactDslJsonBody;
 import au.com.dius.pact.consumer.dsl.PactDslWithProvider;
+import au.com.dius.pact.consumer.junit5.PactConsumerTestExt;
+import au.com.dius.pact.consumer.junit5.PactTestFor;
 import au.com.dius.pact.core.model.RequestResponsePact;
-import br.com.zup.pact.accountapi.dto.BalanceDTO;
-import com.google.gson.Gson;
+import au.com.dius.pact.core.model.annotations.Pact;
 import org.apache.commons.collections4.MapUtils;
 import org.apache.commons.io.IOUtils;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.fluent.Request;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.springframework.beans.factory.annotation.Autowired;
 
 import java.io.IOException;
-import java.math.BigDecimal;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -42,10 +38,10 @@ public class AccountPactTest {
         PactDslJsonBody bodyResponse = new PactDslJsonBody()
                 .integerType("accountId", 1)
                 .integerType("clientId", 1)
-                .decimalType("balance", 100.00);
+                .numberValue("balance", 100.00);
 
         return builder
-                .given("get balance by account id")
+                .given("get balance of accountId 1")
                 .uponReceiving("A request to " +BALANCE_URL_WORKING)
                 .path(BALANCE_URL_WORKING)
                 .method("GET")
@@ -56,15 +52,14 @@ public class AccountPactTest {
                 .toPact();
     }
 
-    @Pact(provider = "AccountBalanceProvider", consumer = "AccountBalanceConsumerNotWorking")
+    @Pact(provider = "AccountBalanceProvider", consumer = "AccountBalanceConsumer")
     public RequestResponsePact balanceEndpointNotWorkingTest(PactDslWithProvider builder) {
         return builder
-                .given("No accounts exist")
-                .uponReceiving("retrieving balance data")
+                .given("No accounts exist from accountId 1000")
+                .uponReceiving("A request to " +BALANCE_URL_NOT_WORKING)
                 .path(BALANCE_URL_NOT_WORKING)
                 .method("GET")
                 .willRespondWith()
-                .headers(headers)
                 .status(404)
                 .toPact();
     }

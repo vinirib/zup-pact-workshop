@@ -1,16 +1,14 @@
-package br.com.zup.pact.client.pact;
+package br.com.zup.pact.accountapi.pact;
 
 import au.com.dius.pact.provider.junit.Provider;
 import au.com.dius.pact.provider.junit.State;
 import au.com.dius.pact.provider.junit.VerificationReports;
 import au.com.dius.pact.provider.junit.loader.PactBroker;
-import au.com.dius.pact.provider.junit.target.Target;
-import au.com.dius.pact.provider.junit.target.TestTarget;
 import au.com.dius.pact.provider.junit5.HttpTestTarget;
 import au.com.dius.pact.provider.junit5.PactVerificationContext;
 import au.com.dius.pact.provider.junit5.PactVerificationInvocationContextProvider;
-import br.com.zup.pact.client.dto.BalanceDTO;
-import br.com.zup.pact.client.integration.account.service.AccountIntegrationService;
+import br.com.zup.pact.accountapi.dto.BalanceDTO;
+import br.com.zup.pact.accountapi.service.AccountService;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.TestTemplate;
@@ -18,6 +16,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.boot.web.server.LocalServerPort;
+import org.springframework.http.ResponseEntity;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import java.math.BigDecimal;
@@ -37,7 +36,7 @@ public class AccountProviderPactTest {
     private int localServerPort;
 
     @MockBean
-    private AccountIntegrationService accountIntegrationService;
+    private AccountService accountService;
 
     @BeforeEach
     void setUp(PactVerificationContext context) {
@@ -55,15 +54,15 @@ public class AccountProviderPactTest {
         context.verifyInteraction();
     }
 
-    @State("get balance by account id")
+    @State("get balance of accountId 1")
     public void getBalanceDTO() {
-        final BalanceDTO balanceDTO = BalanceDTO.builder().clientId(1).accountId(1).balance(new BigDecimal("100")).build();
-        given(accountIntegrationService.getBalance(eq(1))).willReturn(Optional.of(balanceDTO));
-        //final Optional<BalanceDTO> balance = accountIntegrationService.getBalance(1);
+        final BalanceDTO balanceDTO = BalanceDTO.builder().clientId(1).accountId(1).balance(new BigDecimal("100.00")).build();
+        given(accountService.getBalanceByAccountId(eq(1))).willReturn(Optional.of(balanceDTO));
+
     }
 
-    @State("No accounts exist")
+    @State("No accounts exist from accountId 1000")
     public void getBalanceDTONotWorking() {
-        given(accountIntegrationService.getBalance(eq(1))).willReturn(Optional.empty());
+        given(accountService.getBalanceByAccountId(eq(1000))).willReturn(Optional.empty());
     }
 }
