@@ -17,7 +17,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
-import java.util.Objects;
 import java.util.Optional;
 
 @RestController
@@ -64,7 +63,7 @@ public class AccountResourceEndpoint {
         return new ResponseEntity<>(HttpStatus.NOT_FOUND);
     }
 
-    @GetMapping("/balance/{accountId}")
+    @GetMapping("/balance/{clientId}")
     @ApiOperation(notes = "Return balance account of clientId",
             value = "Get balance account of clientId",
             nickname = "getBalanceOfClientId",
@@ -73,8 +72,8 @@ public class AccountResourceEndpoint {
             @ApiResponse(code = 200, message = "Balance Returned", response = BalanceDTO.class),
             @ApiResponse(code = 404, message = "Client Not Found"),
     })
-    public ResponseEntity<BalanceDTO> getBalanceByAccountId(@PathVariable("accountId") Integer accountId) {
-        final Optional<BalanceDTO> balanceDTO = accountService.getBalanceByAccountId(accountId);
+    public ResponseEntity<BalanceDTO> getBalanceByClientId(@PathVariable("clientId") Integer clientId) {
+        final Optional<BalanceDTO> balanceDTO = accountService.getBalanceByClientId(clientId);
         if (balanceDTO.isPresent()) {
             return new ResponseEntity<>(balanceDTO.get(), HttpStatus.OK);
         }

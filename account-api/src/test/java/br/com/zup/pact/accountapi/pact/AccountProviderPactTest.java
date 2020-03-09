@@ -61,12 +61,12 @@ public class AccountProviderPactTest {
                 .accountId(1)
                 .balance(new BigDecimal("100.00"))
                 .build();
-        given(accountService.getBalanceByAccountId(eq(1))).willReturn(Optional.of(balanceDTO));
+        given(accountService.getBalanceByClientId(eq(1))).willReturn(Optional.of(balanceDTO));
 
     }
 
     @State("No accounts exist from accountId 1000")
     public void getBalanceDTONotWorking() {
-        given(accountService.getBalanceByAccountId(eq(1000))).willReturn(Optional.empty());
+        given(accountService.getBalanceByClientId(eq(1000))).willReturn(Optional.empty());
     }
 }

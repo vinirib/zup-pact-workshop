@@ -11,5 +11,5 @@ public interface AccountService {
 
     Optional<List<AccountDetailsDTO>> getAll();
 
-    Optional<BalanceDTO> getBalanceByAccountId(Integer clientId);
+    Optional<BalanceDTO> getBalanceByClientId(Integer clientId);
 }
