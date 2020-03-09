@@ -16,7 +16,6 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.boot.web.server.LocalServerPort;
-import org.springframework.http.ResponseEntity;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import java.math.BigDecimal;
@@ -56,7 +55,12 @@ public class AccountProviderPactTest {
 
     @State("get balance of accountId 1")
     public void getBalanceDTO() {
-        final BalanceDTO balanceDTO = BalanceDTO.builder().clientId(1).accountId(1).balance(new BigDecimal("100.00")).build();
+        final BalanceDTO balanceDTO = BalanceDTO
+                .builder()
+                .clientId(1)
+                .accountId(1)
+                .balance(new BigDecimal("100.00"))
+                .build();
         given(accountService.getBalanceByAccountId(eq(1))).willReturn(Optional.of(balanceDTO));
 
     }

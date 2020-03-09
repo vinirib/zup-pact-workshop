@@ -7,6 +7,8 @@ import au.com.dius.pact.consumer.junit5.PactConsumerTestExt;
 import au.com.dius.pact.consumer.junit5.PactTestFor;
 import au.com.dius.pact.core.model.RequestResponsePact;
 import au.com.dius.pact.core.model.annotations.Pact;
+import br.com.zup.pact.client.dto.BalanceDTO;
+import com.google.gson.Gson;
 import org.apache.commons.collections4.MapUtils;
 import org.apache.commons.io.IOUtils;
 import org.apache.http.HttpResponse;
@@ -15,6 +17,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 
 import java.io.IOException;
+import java.math.BigDecimal;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -31,6 +34,8 @@ public class AccountPactTest {
     private Map<String, String> headers = MapUtils.putAll(new HashMap<>(), new String[] {
             "Content-Type", "application/json"
     });
+
+    private Gson gson = new Gson();
 
     @Pact(provider = "AccountBalanceProvider", consumer = "AccountBalanceConsumer")
     public RequestResponsePact balanceEndpointTest(PactDslWithProvider builder) {
@@ -69,8 +74,11 @@ public class AccountPactTest {
     void testBalanceWorking(MockServer mockServer) throws IOException {
         HttpResponse httpResponse = Request.Get(mockServer.getUrl() + BALANCE_URL_WORKING).execute().returnResponse();
         assertThat(httpResponse.getStatusLine().getStatusCode(), is(equalTo(200)));
-        assertThat(IOUtils.toString(httpResponse.getEntity().getContent()),
-                is(equalTo("{\"accountId\":1,\"clientId\":1,\"balance\":100}")));
+        final BalanceDTO balanceDTO = gson
+                .fromJson(IOUtils.toString(httpResponse.getEntity().getContent()), BalanceDTO.class);
+        assertThat(balanceDTO.getAccountId(), is(1));
+        assertThat(balanceDTO.getClientId(), is(1));
+        assertThat(balanceDTO.getBalance(), is(new BigDecimal("100")));
     }
 
     @Test
